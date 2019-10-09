@@ -38,3 +38,36 @@ for i, col in enumerate(['monthly_charges', 'tenure', 'total_charges']):
 plt.figure(figsize = (8,4))
 sns.boxplot(data = df.drop(columns = ['customer_id', 'total_charges']))
 
+
+# End with a python file wrangle.py that contains the function, wrangle_telco(), that will acquire the data and return a dataframe cleaned with no missing values.
+
+def wrangle_telco():
+    telco_churn_data = pd.read_sql('SELECT customer_id, monthly_charges, tenure, total_charges FROM customers', url)
+    telco_churn_data.replace(r'^\s*$', np.nan, regex=True, inplace=True)  
+    telco_churn_data = df.dropna()
+    df.total_charges = df.total_charges.astype('float')
+    return telco_churn_data
+
+def wrangle_telco_viz():
+    plt.figure(figsize = (16,3))
+    for i, col in enumerate(['monthly_charges', 'tenure', 'total_charges']):
+        plot_number = i + 1 # i starts at 0, but plot nos should start at 1
+        series = df[col]
+        plt.subplot(1,3,plot_number)
+        plt.title(col)
+        series.hist(bins=5)
+    plt.figure(figsize = (8,4))
+    sns.boxplot(data = df.drop(columns = ['customer_id', 'total_charges']))
+    return wrangle_telco_viz
+
+def wrangle_telco_description():
+    print()
+    print('Showing 10-line sample', '\n', df.sample(10))
+    print()
+    print('Showing df.describe', '\n', df.describe())
+    print()
+    print('Showing df.shape', '\n', df.shape)
+    print()
+    print('Showing df.info')
+    print(df.info())
+    return wrangle_telco_description
