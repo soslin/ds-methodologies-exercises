@@ -10,7 +10,7 @@ import seaborn as sns
 import numpy as np
 
 url = f'mysql+pymysql://{user}:{password}@{host}/telco_churn'
-df = pd.read_sql('SELECT customer_id, monthly_charges, tenure, total_charges FROM customers', url)
+df = pd.read_sql('SELECT customer_id, monthly_charges, tenure, total_charges FROM customers JOIN internet_service_types USING (internet_service_type_id) WHERE contract_type_id = 3;', url)
 
 # Walk through the steps above using your new dataframe. You may handle the missing values however you feel is appropriate.
 df.head()
