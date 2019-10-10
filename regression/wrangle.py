@@ -42,7 +42,7 @@ sns.boxplot(data = df.drop(columns = ['customer_id', 'total_charges']))
 # End with a python file wrangle.py that contains the function, wrangle_telco(), that will acquire the data and return a dataframe cleaned with no missing values.
 
 def wrangle_telco():
-    telco_churn_data = pd.read_sql('SELECT customer_id, monthly_charges, tenure, total_charges FROM customers', url)
+    telco_churn_data = pd.read_sql('SELECT customer_id, monthly_charges, tenure, total_charges FROM customers JOIN internet_service_types USING (internet_service_type_id) WHERE contract_type_id = 3;', url)
     telco_churn_data.replace(r'^\s*$', np.nan, regex=True, inplace=True)  
     telco_churn_data = df.dropna()
     df.total_charges = df.total_charges.astype('float')
