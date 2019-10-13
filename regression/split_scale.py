@@ -10,33 +10,35 @@ from sklearn.model_selection import train_test_split
 import wrangle
 from sklearn.preprocessing import StandardScaler, QuantileTransformer, PowerTransformer, RobustScaler, MinMaxScaler
 
+#QuantileTransformer is exclusive
+#STandardScaleris z-score
+
 #1. split_my_data(X, y)
 def split_my_data():
     df = wrangle.wrangle_telco()
-    X = df.drop(columns=['total_charges'])
-    y = df.total_charges
+    X = df.drop(columns=['total_charges', 'customer_id'])
+    y = pd.DataFrame(df.total_charges)
     x_train, x_test, y_train, y_test = train_test_split(X, y, train_size = .8, random_state = 123)
     return x_train, x_test, y_train, y_test
+#x_train, x_test, y_train, y_test = split_my_data()
 
 
 
-
-def standard_scaler(x_train, x_test, y_train, y_test):
+def standard_scaler():
+    x_train, x_test, y_train, y_test = split_my_data()
     scaler_x_train = StandardScaler(copy=True, with_mean=True, with_std=True)\
                 .fit(x_train[['monthly_charges', 'tenure']])
-    scaler_x_test = StandardScaler(copy=True, with_mean=True, with_std=True)\
-                .fit(x_test[['monthly_charges', 'tenure']])
     scaler_y_train = StandardScaler(copy=True, with_mean=True, with_std=True)\
                 .fit(pd.DataFrame(y_train))
-    scaler_y_test = StandardScaler(copy=True, with_mean=True, with_std=True)\
-                .fit(pd.DataFrame(y_test))
     
 #scaler.transform
-    train_x_scaled_data = scaler_x_train.transform(x_train[['monthly_charges', 'tenure']])
-    test_x_scaled_data = scaler_x_test.transform(x_test[['monthly_charges', 'tenure']])
-    train_y_scaled_data = scaler_y_train.transform(pd.DataFrame(y_train))
-    test_y_scaled_data = scaler_y_test.transform(pd.DataFrame(y_test))
+    train_x_scaled_data = pd.DataFrame(scaler_x_train.transform(x_train), columns = x_train.columns.values).set_index([x_train.index.values])
+    test_x_scaled_data = pd.DataFrame(scaler_x_train.transform(x_test), columns = x_test.columns.values).set_index([x_test.index.values])
+    train_y_scaled_data = pd.DataFrame(scaler_y_train.transform(y_train), columns = y_train.columns.values).set_index([y_train.index.values])
+    test_y_scaled_data = pd.DataFrame(scaler_y_train.transform(y_test), columns = y_test.columns.values).set_index([y_test.index.values])
     return train_x_scaled_data, test_x_scaled_data, train_y_scaled_data, test_y_scaled_data
+    
+train_x_scaled_data, test_x_scaled_data, train_y_scaled_data, test_y_scaled_data = standard_scaler()
 
 
 
