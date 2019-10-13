@@ -14,6 +14,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 from pydataset import data
+
 df = data('tips')
 
 # 2. Fit a linear regression model (ordinary least squares) and compute yhat, predictions of tip using total_bill. You may follow these steps to do that:
@@ -38,6 +39,7 @@ y = df.tip
 
 
 ols_model = ols('y ~ x', data=df).fit()
+ols_model
 df['yhat'] = ols_model.predict(pd.DataFrame(x))
 df.head()
 
@@ -45,4 +47,55 @@ df.head()
 
 
 # 4. Write a function, plot_residuals(x, y, dataframe) that takes the feature, the target, and the dataframe as input and returns a residual plot. (hint: seaborn has an easy way to do this!)
+
+def plot_residuals(x,y,dataframe):
+    g = sns.residplot(x, y, data=df, color='firebrick')
+    return g
+plot_residuals(x,y,df)
+
+
+
+# 5. Write a function, regression_errors(y, yhat), that takes in y and yhat, returns the sum of squared errors (SSE), explained sum of squares (ESS), total sum of squares (TSS), mean squared error (MSE) and root mean squared error (RMSE).
+
+df['residual'] = df['yhat'] - df['tip']
+df.head()
+
+yhat = df['yhat']
+
+df['residual^2'] = df.residual ** 2
+df.head()
+
+def regression_errors(y,yhat):
+    SSE = (df['yhat'] - df['tip'])**2
+    ESS = sum((df.yhat - df['tip'].mean())**2) #ESS (Explained Sum of Squares) is the difference between the predicted and the mean.
+    TSS = SSE + ESS #TSS (Total Sum of Squares) is the difference between the actual and the mean. Also the total of ESS and SSE.
+    MSE = SSE/len(df) 
+    RMSE = sqrt(mean_squared_error(df['tip'], df.yhat))
+    return (SSE, ESS, TSS, MSE, RMSE) #How do i run this?
+
+# Write a function, baseline_mean_errors(y), that takes in your target, y, computes the SSE, MSE & RMSE when yhat is equal to the mean of all y, and returns the error values (SSE, MSE, and RMSE).
+
+def baseline_mean_errors(y):
+
+ss = pd.DataFrame(np.array(['SSE','ESS','TSS']), columns=['metric'])
+ss['model_values'] = np.array([SSE, ESS, TSS])
+
+df_baseline = df[['total_bill','tip']]
+df_baseline['yhat'] = df_baseline['tip'].mean()
+
+df_eval = pd.DataFrame(np.array(['SSE','MSE','RMSE']), columns=['metric'])
+df_eval['model_error'] = np.array([SSE, MSE, RMSE])
+df_eval
+
+df_baseline['residual'] = df_baseline['yhat'] - df_baseline['tip']
+# square that delta
+df_baseline['residual^2'] = df_baseline['residual'] ** 2
+
+df_eval['baseline_error'] = np.array([SSE, MSE, RMSE])
+df_eval['error_delta'] = df_eval.model_error - df_eval.baseline_error
+df_eval
+
+ESS_baseline = sum((df.yhat - df['tip'].mean())**2)
+SSE_baseline = SSE['baseline_error'] #why is this erring?
+TSS_baseline = ESS_baseline + SSE_baseline
 
