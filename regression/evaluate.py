@@ -33,12 +33,10 @@ print(df.isnull().sum())
 df.total_bill.value_counts(ascending = True)
 df.tip.value_counts(ascending = True)
 
-#Variables
-x = df.total_bill 
-y = df.tip
 
 
-ols_model = ols('y ~ x', data=df).fit()
+
+ols_model = ols('tip ~ total_bill', data=df).fit() #'y ~ x' special code to indicate building a model based on x to predict y
 ols_model
 df['yhat'] = ols_model.predict(pd.DataFrame(x))
 df.head()
@@ -55,6 +53,8 @@ plot_residuals(x,y,df)
 
 
 
+
+
 # 5. Write a function, regression_errors(y, yhat), that takes in y and yhat, returns the sum of squared errors (SSE), explained sum of squares (ESS), total sum of squares (TSS), mean squared error (MSE) and root mean squared error (RMSE).
 
 df['residual'] = df['yhat'] - df['tip']
@@ -66,12 +66,13 @@ df['residual^2'] = df.residual ** 2
 df.head()
 
 def regression_errors(y,yhat):
-    SSE = (df['yhat'] - df['tip'])**2
+    SSE = sum((df['yhat'] - df['tip'])**2)
     ESS = sum((df.yhat - df['tip'].mean())**2) #ESS (Explained Sum of Squares) is the difference between the predicted and the mean.
     TSS = SSE + ESS #TSS (Total Sum of Squares) is the difference between the actual and the mean. Also the total of ESS and SSE.
     MSE = SSE/len(df) 
     RMSE = sqrt(mean_squared_error(df['tip'], df.yhat))
-    return (SSE, ESS, TSS, MSE, RMSE) #How do i run this?
+    return (SSE, ESS, TSS, MSE, RMSE)
+regression_errors(df['tip'], df['yhat'])
 
 
 
@@ -80,37 +81,18 @@ def regression_errors(y,yhat):
 #6. Write a function, baseline_mean_errors(y), that takes in your target, y, computes the SSE, MSE & RMSE when yhat is equal to the mean of all y, and returns the error values (SSE, MSE, and RMSE).
 
 def baseline_mean_errors(y):
-
-ss = pd.DataFrame(np.array(['SSE','ESS','TSS']), columns=['metric'])
-ss['model_values'] = np.array([SSE, ESS, TSS])
-
-df_baseline = df[['total_bill','tip']]
-df_baseline['yhat'] = df_baseline['tip'].mean()
-
-df_eval = pd.DataFrame(np.array(['SSE','MSE','RMSE']), columns=['metric'])
-df_eval['model_error'] = np.array([SSE, MSE, RMSE])
-df_eval
-
-df_baseline['residual'] = df_baseline['yhat'] - df_baseline['tip']
-# square that delta
-df_baseline['residual^2'] = df_baseline['residual'] ** 2
-
-df_eval['baseline_error'] = np.array([SSE, MSE, RMSE])
-df_eval['error_delta'] = df_eval.model_error - df_eval.baseline_error
-df_eval
-
-ESS_baseline = sum((df.yhat - df['tip'].mean())**2)
-SSE_baseline = SSE['baseline_error'] #why is this erring?
-TSS_baseline = ESS_baseline + SSE_baseline
-MSE_baseline = SSE['baseline_error']/len(df)
-RMSE_baseline = sqrt(MSE_baseline)
-
+    mean_y = df["tip"].mean()
+    SSE_baseline = sum((mean_y - df['tip'])**2)
+    MSE_baseline = SSE_baseline/len(df)
+    RMSE_baseline = sqrt(MSE_baseline)
+    return SSE_baseline, MSE_baseline, RMSE_baseline
+baseline_mean_errors(df['tip'])
 
 
 #calculating R2 - 2 ways
 #1
-SSE = (df['yhat'] - df['tip'])**2
-ESS = sum((df.yhat - df['tip'].mean())**2) 
+SSE = sum((df['yhat'] - df['tip'])**2)
+ESS = sum((df.yhat - df['tip'].mean())**2)
 TSS = SSE + ESS 
 MSE = SSE/len(df) 
 RMSE = sqrt(mean_squared_error(df['tip'], df.yhat))
@@ -125,7 +107,6 @@ print('R-squared = ', round(r2,3))
 
 #F statistic/p-value
 f_pval = ols_model.f_pvalue
-
 print("p-value for model significance = ", round(f_pval,8))
 
 
@@ -142,21 +123,19 @@ MSE_baseline = mean_squared_error(df_baseline['tip'], df_baseline.yhat)
 print("model is better?", MSE < MSE_baseline)
 
 
+
+
 #8. Write a function, model_significance(ols_model), that takes the ols model as input and returns the amount of variance explained in your model (r^2), and the value telling you whether the correlation between the model and the tip value are statistically significant (F stat, value).
 
-
-
-
 def model_significance(ols_model):
+    r2 = ESS/TSS
+    print('R-squared = ',round(r2,3))
+    print("Percent of variance in y explained by x = ", round(R2*100,1), "%")
 
-r2 = ESS/TSS
-print('R-squared = ',round(r2,3))
-print("Percent of variance in y explained by x = ", round(R2*100,1), "%")
+    r2 = ols_model.rsquared
+    print('r-squared = ', round(r2,3))
 
-r2 = ols_model.rsquared
-print('r-squared = ', round(r2,3))
-
-#F statistic/p-value
-f_pval = ols_model.f_pvalue
+    #F statistic/p-value
+    f_pval = ols_model.f_pvalue
 
 print("p-value for model significance = ", round(f_pval,8))
