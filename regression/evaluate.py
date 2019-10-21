@@ -9,7 +9,6 @@ from sklearn.metrics import mean_squared_error, r2_score, explained_variance_sco
 from sklearn.feature_selection import f_regression 
 from math import sqrt
 import matplotlib.pyplot as plt
-%matplotlib inline
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -115,14 +114,14 @@ print("p-value for model significance = ", round(f_pval,8))
 
 #7. Write a function, better_than_baseline(SSE), that returns true if your model performs better than the baseline, otherwise false.
 
-def better_than_baseline(SSE, SSE_baseline):
+def better_than_baseline(MSE, MSE_baseline):
     MSE_baseline = mean_squared_error(df_baseline.y, df_baseline.yhat)
     if MSE < MSE_baseline:
-        return True
-MSE_baseline = mean_squared_error(df_baseline['tip'], df_baseline.yhat)
+        return MSE < MSE_baseline
+better_than_baseline(MSE, MSE_baseline)
 print("model is better?", MSE < MSE_baseline)
 
-
+MSE_baseline = mean_squared_error(df_baseline['tip'], df_baseline.yhat)
 
 
 #8. Write a function, model_significance(ols_model), that takes the ols model as input and returns the amount of variance explained in your model (r^2), and the value telling you whether the correlation between the model and the tip value are statistically significant (F stat, value).
@@ -131,11 +130,13 @@ def model_significance(ols_model):
     r2 = ESS/TSS
     print('R-squared = ',round(r2,3))
     print("Percent of variance in y explained by x = ", round(R2*100,1), "%")
+    return model_significance
+model_significance(ols_model)
 
-    r2 = ols_model.rsquared
-    print('r-squared = ', round(r2,3))
+r2 = ols_model.rsquared
+print('r-squared = ', round(r2,3))
 
     #F statistic/p-value
-    f_pval = ols_model.f_pvalue
+f_pval = ols_model.f_pvalue
 
-print("p-value for model significance = ", round(f_pval,8))
+print("p-value for model significance = ", f_pval)

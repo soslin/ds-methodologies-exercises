@@ -37,7 +37,7 @@ def standard_scaler(x_train, x_test):
     
     return train_x_scaled_data, test_x_scaled_data, scaler_x_train, scaler_x_test
     
-train_x_scaled_data, test_x_scaled_data = standard_scaler(x_train,x_test)
+train_x_scaled_data, test_x_scaled_data,scaler_x_train, scaler_x_test = standard_scaler(x_train,x_test)
 
 
 
