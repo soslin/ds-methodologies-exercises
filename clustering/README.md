@@ -1,0 +1,1 @@
+README for clustering exercises
