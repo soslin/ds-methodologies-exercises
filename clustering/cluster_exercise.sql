@@ -27,9 +27,8 @@ LEFT JOIN storytype AS s
 LEFT JOIN typeconstructiontype AS t
 	ON t.typeconstructiontypeid = p.typeconstructiontypeid
 LEFT JOIN  unique_properties as u
-	ON u.parcelid = p.parcelid;
-
-
+	ON u.parcelid = p.parcelid
+WHERE latitude NOT IS NULL AND longitude NOT IS NULL;
 
 
 

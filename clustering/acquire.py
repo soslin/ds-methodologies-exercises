@@ -24,7 +24,8 @@ LEFT JOIN storytype AS s
 LEFT JOIN typeconstructiontype AS t
 	ON t.typeconstructiontypeid = p.typeconstructiontypeid
 LEFT JOIN  unique_properties as u
-	ON u.parcelid = p.parcelid;''', url)
+	ON u.parcelid = p.parcelid
+WHERE plu.propertylandusetypeid IN (261,262,273,275,279);''', url)
     return zillow_data
 acquire_zillow()
 
