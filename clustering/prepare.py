@@ -3,6 +3,7 @@ import pandas as pd
 import acquire
 
 
+
 def remove_dup_col(df):
     df = df.loc[:,~df.columns.duplicated()]
     return df
@@ -20,6 +21,10 @@ def nulls_by_row(df):
     pct_cols_missing = df.isnull().sum(axis=1)/df.shape[1]*100
     rows_missing = pd.DataFrame({'num_cols_missing': num_cols_missing, 'pct_cols_missing': pct_cols_missing}).reset_index().groupby(['num_cols_missing','pct_cols_missing']).count().rename(index=str, columns={'index': 'num_rows'}).reset_index()
     return rows_missing
+
+def sort_values(df):
+    df.sort_values("transactiondate", ascending = True, inplace=True)
+    return df
 
 # Check if correct
 def drop_dups(df):
@@ -87,10 +92,11 @@ def impute_values(df):
 
 
 
-def print_outliers(df):
-    outlier_cols = [col for col in df if col.endswith('_outliers')]
-    for col in outlier_cols:
-        print('~~~\n' + col)
-        data = df[col][df[col] > 0]
-        print(data.describe())
+# def print_outliers(df):
+#     outlier_cols = [col for col in df if col.endswith('_outliers')]
+#     for col in outlier_cols:
+#         print('~~~\n' + col)
+#         data = df[col][df[col] > 0]
+#         print(data.describe())
     
+    df = impute_values(df)
