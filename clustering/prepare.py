@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import acquire
 
-df = acquire.acquire_zillow()
 
 def remove_dup_col(df):
     df = df.loc[:,~df.columns.duplicated()]
@@ -43,46 +42,49 @@ def data_prep(df, cols_to_remove=[], prop_required_column=.6, prop_required_row=
 
 
 def drop_col(df):
-    df = df.drop(columns = ['airconditioningtypeid','architecturalstyletypeid','buildingqualitytypeid', 'buildingclasstypeid','basementsqft','regionidzip', 
-                        'unitcnt', 'censustractandblock', 'yearbuilt', 'taxamount', 'landtaxvaluedollarcnt', 
-                        'structuretaxvaluedollarcnt','taxvaluedollarcnt', 'calculatedbathnbr', 'fullbathcnt', 
-                        'lotsizesquarefeet', 'regionidcity', 'finishedsquarefeet12', 'heatingorsystemtypeid', 
-                        'propertylandusetypeid', 'typeconstructiondesc', 'storydesc', 'storydesc','architecturalstyledesc',
-                        'airconditioningdesc', 'censustractandblock', 'taxdelinquencyyear', 'taxdelinquencyflag', 'decktypeid',
-                        'finishedfloor1squarefeet', 'finishedsquarefeet13', 'finishedsquarefeet15','finishedsquarefeet50', 'finishedsquarefeet6',
-                        'fireplacecnt', 'garagecarcnt','garagecarcnt','garagetotalsqft','hashottuborspa','poolcnt', 'poolsizesum', 'pooltypeid10', 
-                        'pooltypeid2','pooltypeid7', 'propertyzoningdesc', 'regionidneighborhood', 'storytypeid', 'threequarterbathnbr', 'typeconstructiontypeid', 'yardbuildingsqft17', 'yardbuildingsqft26', 'numberofstories','fireplaceflag',] )
+    df = df.drop(columns = ['buildingqualitytypeid', 'calculatedbathnbr', 'finishedsquarefeet12', 'fullbathcnt', 'heatingorsystemtypeid', 'lotsizesquarefeet', 'propertyzoningdesc', 'regionidcity', 'unitcnt', 'yearbuilt', 'censustractandblock', 'heatingorsystemdesc'])
+      
     return df
 
 def impute_values(df):
     sqfeet = df.calculatedfinishedsquarefeet.median()
     df.calculatedfinishedsquarefeet = df.calculatedfinishedsquarefeet.fillna(sqfeet)
+    regionzip = df.regionidzip.median()
+    df.regionidzip = df.regionidzip.fillna(regionzip)
+    structuretaxvalue = df.structuretaxvaluedollarcnt.median()
+    df.structuretaxvaluedollarcnt = df.structuretaxvaluedollarcnt.fillna(structuretaxvalue)
+    taxvalue = df.taxvaluedollarcnt.median()
+    df.taxvaluedollarcnt = df.taxvaluedollarcnt.fillna(taxvalue)
+    landtaxvalue = df.landtaxvaluedollarcnt.median()
+    df.landtaxvaluedollarcnt = df.landtaxvaluedollarcnt.fillna(landtaxvalue)
+    tax = df.taxamount.median()
+    df.taxamount = df.taxamount.fillna(tax)
     return df
 
-def get_upper_outliers(s, k):
-    '''
-    Given a series and a cutoff value, k, returns the upper outliers for the series.
-    The values returned will be either 0 (if the point is not an outlier), or a
-    number that indicates how far away from the upper bound the observation is.
-    '''
-    q1, q3 = s.quantile([.25, .75])
-    iqr = q3 - q1
-    upper_bound = q3 + 1.5 * iqr
-    return s.apply(lambda x: max([x - upper_bound, 0]))
+# def get_upper_outliers(s, k = 1.5):
+#     '''
+#     Given a series and a cutoff value, k, returns the upper outliers for the series.
+#     The values returned will be either 0 (if the point is not an outlier), or a
+#     number that indicates how far away from the upper bound the observation is.
+#     '''
+#     q1 = s.quantile([.25])
+#     q3 = s.quantile([.75])
+#     iqr = q3 - q1
+#     upper_bound = q3 + k * iqr
+#     return s.apply(lambda x: max([x - upper_bound, 0]))
 
 
-def add_upper_outlier_columns(df, k):
+# def add_upper_outlier_columns(df, k):
     
-    #Add a column with the suffix _outliers for all the numeric columns in the given dataframe.
+#     #Add a column with the suffix _outliers for all the numeric columns in the given dataframe.
     
-    # outlier_cols = {col + '_outliers': get_upper_outliers(df[col], k) for col in df.select_dtypes('number')}
-    # return df.assign(**outlier_cols)
+#     # outlier_cols = {col + '_outliers': get_upper_outliers(df[col], k) for col in df.select_dtypes('number')}
+#     # return df.assign(**outlier_cols)
 
-    for col in df.select_dtypes('number'):
-        df[col + '_outliers'] = get_upper_outliers(df[col], k)
-        return df
+#     for col in df.select_dtypes('number'):
+#         df[col + '_outliers'] = get_upper_outliers(df[col], k)
+#         return df
 
-add_upper_outlier_columns(df, k=1.5)
 
 
 def print_outliers(df):
