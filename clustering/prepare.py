@@ -66,37 +66,45 @@ def impute_values(df):
     df.taxamount = df.taxamount.fillna(tax)
     return df
 
-# def get_upper_outliers(s, k = 1.5):
-#     '''
-#     Given a series and a cutoff value, k, returns the upper outliers for the series.
-#     The values returned will be either 0 (if the point is not an outlier), or a
-#     number that indicates how far away from the upper bound the observation is.
-#     '''
-#     q1 = s.quantile([.25])
-#     q3 = s.quantile([.75])
-#     iqr = q3 - q1
-#     upper_bound = q3 + k * iqr
-#     return s.apply(lambda x: max([x - upper_bound, 0]))
+def get_upper_outliers(s, k = 1.5):
+    q1 = s.quantile([.25])
+    q3 = s.quantile([.75])
+    iqr = q3 - q1
+    upper_bound = q3 + k * iqr
+    return s.apply(lambda x: max([x - upper_bound, 0]))
+
+def add_upper_outlier_columns(df, k):
+    outlier_cols = {col + '_outliers': get_upper_outliers(df[col], k) for col in df.select_dtypes('number')}
+    return df.assign(**outlier_cols)
+
+    for col in df.select_dtypes('number'):
+        df[col + '_outliers'] = get_upper_outliers(df[col], k)
+        return df
+
+    def get_lower_outliers(s, k):
+    q1, q3 = s.quantile([.25, .75])
+    iqr = q3 - q1
+    lower_bound = q3 - k * iqr
+    return s.apply(lambda x: max([x - lower_bound, 0]))
+
+    return df
+add_upper_outlier_columns(df, k=1.5)
 
 
-# def add_upper_outlier_columns(df, k):
-    
-#     #Add a column with the suffix _outliers for all the numeric columns in the given dataframe.
-    
-#     # outlier_cols = {col + '_outliers': get_upper_outliers(df[col], k) for col in df.select_dtypes('number')}
-#     # return df.assign(**outlier_cols)
+def add_lower_outlier_columns(df, k):
+    outlier_cols = {col + '_outliers': get_lower_outliers(df[col], k)
+                     for col in df.select_dtypes('number')}
+    return df.assign(**outlier_cols)
 
-#     for col in df.select_dtypes('number'):
-#         df[col + '_outliers'] = get_upper_outliers(df[col], k)
-#         return df
+    for col in df.select_dtypes('number'):
+        df[col + '_outliers'] = get_lower_outliers(df3[col], k)
 
+def get_lower_outliers(s, k):
+    q1, q3 = s.quantile([.25, .75])
+    iqr = q3 - q1
+    lower_bound = q3 - k * iqr
+    return s.apply(lambda x: max([x - lower_bound, 0]))
 
+    return df
+add_lower_outlier_columns(df, k=1.5)
 
-# def print_outliers(df):
-#     outlier_cols = [col for col in df if col.endswith('_outliers')]
-#     for col in outlier_cols:
-#         print('~~~\n' + col)
-#         data = df[col][df[col] > 0]
-#         print(data.describe())
-    
-    df = impute_values(df)
