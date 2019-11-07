@@ -28,10 +28,12 @@ LEFT JOIN typeconstructiontype AS t
 	ON t.typeconstructiontypeid = p.typeconstructiontypeid
 LEFT JOIN  unique_properties as u
 	ON u.parcelid = p.parcelid
-WHERE latitude NOT IS NULL AND longitude NOT IS NULL;
+WHERE plu.propertylandusetypeid IN (261,262,273,275,279)
+	AND (bathroomcnt > 0 AND bedroomcnt > 0);
 
 
-
+SELECT * FROM properties_2017
+wHERE roomcnt < 1;
 
 
     

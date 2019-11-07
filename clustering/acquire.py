@@ -5,6 +5,7 @@ from env import host, user, password
 # Data import
 url = f'mysql+pymysql://{user}:{password}@{host}/zillow'
 
+
 def acquire_zillow():
     zillow_data = pd.read_sql('''SELECT * FROM predictions_2017 AS pr
 INNER JOIN properties_2017 as p
@@ -25,8 +26,28 @@ LEFT JOIN typeconstructiontype AS t
 	ON t.typeconstructiontypeid = p.typeconstructiontypeid
 LEFT JOIN  unique_properties as u
 	ON u.parcelid = p.parcelid
-WHERE plu.propertylandusetypeid IN (261,262,273,275,279);''', url)
+WHERE plu.propertylandusetypeid IN (261,262,273,275,279)
+    AND (bathroomcnt > 0 AND bedroomcnt > 0);''', url)
     return zillow_data
 acquire_zillow()
 
 df = acquire_zillow()
+
+
+url2 = f'mysql+pymysql://{user}:{password}@{host}/iris_db'
+def acquire_iris_data():
+    iris_data = pd.read_sql('''
+    SELECT petal_length, petal_width, sepal_length, sepal_width, species_id, species_name
+	FROM measurements m
+	JOIN species s USING(species_id); ''', url2)
+    return iris_data
+
+df2 = acquire_iris_data()
+
+
+url3 = f'mysql+pymysql://{user}:{password}@{host}/mall_customers'
+def acquire_mallcustomer_data():
+    mallcustomer_data = pd.read_sql('''SELECT * FROM customers;''', url3)
+    return mallcustomer_data
+
+df3 = acquire_mallcustomer_data()

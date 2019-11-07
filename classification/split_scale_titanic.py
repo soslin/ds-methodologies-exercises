@@ -1,4 +1,4 @@
-# Each scaler function should create the object, fit and transform both train and test. They should return the scaler, train dataframe scaled, test dataframe scaled. Be sure your indices represent the original indices from train/test, as those represent the indices from the original dataframe.
+
 
 import pandas as pd
 from env import host, user, password

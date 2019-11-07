@@ -1,0 +1,19 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+import warnings
+warnings.filterwarnings("ignore")
+
+import split_scale
+
+
+def split_my_data(X,y):
+    x_train, x_test, y_train, y_test = train_test_split(X, y, train_size = .8, random_state = 123)
+    return x_train, x_test, y_train, y_test
+x_train, x_test, y_train, y_test = split_my_data(X,y)
