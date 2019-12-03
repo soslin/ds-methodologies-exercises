@@ -1,0 +1,46 @@
+Conversation with Everybody on Outliers/Anomalies
+
+Where it’s valuable and makes sense to remove outliers:
+- when there’s 225 floors climbed in fitbit data
+- developing normal ranges for medical tests, defining what’s “normal”
+- risk management when assessing what’s “normal” 
+- establishing insurance rates - actuarial tables
+- when you have a LOT of data like Zillow
+- projecting your base customers, your core customers
+- identifying a key driver
+- contract performance market rates. labor pricing
+- clustering to identify customer profiles
+- making sense of hockey stick distributions
+- test item analysis - when you go back and ask if you’ve asked an effective test question- looking for most commonly missed or accurate question answers
+- anything doing with salary data- hard 0 on one end and outliers are way out
+- survey responses
+- trends in animal migration
+
+Keep outliers
+- fraud prevention
+- self driving cars (object detection) - false negatives = bar
+- 5% of players generate 95% of revenue 
+- fraud detection
+- UFO detection
+- exoplanet detection 
+- quantum mechanics tests 
+- goldmining
+- ecosystem reactions
+- banking 
+- threat finance
+- you need to know the unlikely scenario to help you build your understanding
+- lottery marketing to hype the outliers
+- monitoring twitter
+- threat detection
+- failure mode in effects analysis (probability of failure in a critical path)
+- process control
+- flood control systems - infrastructure vs. 500 year flood 
+- rideshare (see SuperPump)
+- spam detection
+- financial audits
+- outliers with sentiment (reviews)
+- silicon valley episode when they try to roll out their product b/c they got a lot of click-throughs, but it turns out that the clicks were purchased.
+- how to game systems 
+- SEO
+- wifi packets - network analysis
+- not allowed to use USB thumb drives
