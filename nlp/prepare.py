@@ -16,10 +16,12 @@ def handle_white_space(s):
     s = s.replace('\n', ' ')
     return re.sub(r"[^a-z0-9'\s]", '', s)
 
+
 def unicode_normalize(s): 
     return unicodedata.normalize('NFKD', s)\
     .encode('ascii', 'ignore')\
     .decode('utf-8', 'ignore')
+
 
 def prepare_article():
     original = acquire.make_new_request()
@@ -28,6 +30,14 @@ def prepare_article():
     article['body'] = article.body.apply(handle_white_space)
     article['body'] = article.body.apply(unicode_normalize)
     return article
-article = prepare_article()
 
 
+def prep_blog_posts(df):
+    df = acquire.get_blog_posts()
+    return prep_blog_posts(df)
+
+
+def prep_corpus():
+    blog_df = prep_blog_posts()
+    blog_df["source"] = "Codeup Blog"
+    return blog_df
